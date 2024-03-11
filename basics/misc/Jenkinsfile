@@ -26,7 +26,7 @@ node {
    stage('docker run') {
      sh label: '',
      script: '''
-      docker run --rm -tid --name docker_test -p 3000 michabi/jenkins-lab:latest
+      docker run --rm -tid --name docker_test -p 3000 roysav/jenkins-lab:latest
       docker kill docker_test
       '''
     }
