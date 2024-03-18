@@ -6,7 +6,7 @@ node {
   }
   stage('DockerBuild') {
     dir('advance/workshop') {
-      sh 'docker build --target test -t roysav/ci-cd:multi_stage_builder -f Dockerfile-pipelines .'
+      sh 'docker build --target test -t roysav/ci-cd:multi_stage_builder .'
     }
   }
   stage('Linting') {
@@ -14,7 +14,7 @@ node {
   stage('Push') {
   withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
         dir('advance/workshop') {
-        sh 'DOCKER_BUILDKIT=0 docker build --network multistage_build_nexus -t roysav/ci-cd:multi_stage_test -f Dockerfile-pipelines .'
+        sh 'docker build -t roysav/ci-cd:multi_stage_test .'
         sh "docker login -u $USERNAME -p $PASSWORD"
         sh 'docker push roysav/ci-cd:multi_stage_test'
         }
