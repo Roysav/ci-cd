@@ -9,5 +9,14 @@ services:
         - 0.0.0.0:9092:9092
       networks:
        - nexus
+  my_app:
+      build: 
+        dockerfile: Dockerfile-pipelines
+        context: .
+      image: roysav/multistage-build
+      networks:
+       - nexus
+      depends_on:
+        - sonarqube
 networks:
   nexus:
