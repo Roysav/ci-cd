@@ -1,6 +1,5 @@
 node {
   def commit_id
-  def docker_credentianals = credetianals('docker')
   stage('step a') {
     checkout scm
     sh 'git rev-parse --short HEAD > .git/commit-id'
