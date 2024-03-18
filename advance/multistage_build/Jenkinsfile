@@ -12,7 +12,6 @@ node {
   }
   stage('Linting') {
   }
-}
   stage('Push') {
   withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
         dir('advance/multistage_build') {
@@ -22,3 +21,4 @@ node {
         }
   }
    }
+}
