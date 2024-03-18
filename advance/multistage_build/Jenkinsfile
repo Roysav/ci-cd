@@ -13,8 +13,8 @@ node {
   stage('Linting') {
   }
 }
-   withCredentials([string(credetianalsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
   stage('Push') {
+  withCredentials([string(credetianalsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
         dir('advance/multistage_build') {
         sh 'docker build --target linting -t roysav/ci-cd:multi_stage_test -f Dockerfile-pipelines .'
         sh "docker login -u $USERNAME -p $PASSWORD"
