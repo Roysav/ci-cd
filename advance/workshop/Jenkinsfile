@@ -1,1 +1,25 @@
-bm9kZSB7CiAgZGVmIGNvbW1pdF9pZAogICBzdGFnZSgnQ2hlY2tvdXQnKSB7CiAgICAgY2hlY2tvdXQgc2NtCiAgICAgc2ggImdpdCByZXYtcGFyc2UgLS1zaG9ydCBIRUFEID4gLmdpdC9jb21taXQtaWQiCiAgICAgY29tbWl0X2lkID0gcmVhZEZpbGUoJy5naXQvY29tbWl0LWlkJykudHJpbSgpCiAgIH0KICAgc3RhZ2UoJ2RvY2tlciBNdWx0aVN0YWdlIGJ1aWxkL3B1c2gnKSB7CiAgICAgZGlyKCJhZHZhbmNlL3dvcmtzaG9wL3RhbGtzaG93IikgewogICAgICBkZWYgZmxhc2tfaW1hZ2UgPSBkb2NrZXIuYnVpbGQoIm1pY2hhYmkvamVua2lucy1sYWI6JHtjb21taXRfaWR9IiwgIi0tYnVpbGQtYXJncyBVU0VSTkFNRT0ke2Vudi5CVUlMRF9VU0VSX0lEfSwgJy4nIikKICAgICAgZG9ja2VyLndpdGhSZWdpc3RyeSgnaHR0cHM6Ly9pbmRleC5kb2NrZXIuaW8vdjEvJywgJ2RvY2tlcl9odWInKSB7CiAgICAgICAgZmxhc2tfaW1hZ2UucHVzaCgpCiAgICAgIH0KICAgICB9CiAgIH0KICAgc3RhZ2UoJ2RvY2tlciBydW4nKSB7CiAgICAgZmxhc2tfaW1hZ2UucnVuKCkKICAgfQp9
+node {
+  stage('step a') {
+    checkout scm
+    sh 'git rev-parse --short HEAD > .git/commit-id'
+    readFile('.git/commit-id').trim()
+  }
+  stage('DockerBuild') {
+    dir('advance/workshop') {
+      sh 'docker build --target test .
+      roysav/ci-cd:multi_stage_builder -f Dockerfile-pipelines .'
+    }
+  }
+  stage('Linting') {
+  }
+  stage('Push') {
+  withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]){
+        dir('advance/workshop') {
+        sh 'DOCKER_BUILDKIT=0 docker build --network multistage_build_nexus -t
+         roysav/ci-cd:multi_stage_test -f Dockerfile-pipelines .'
+        sh "docker login -u $USERNAME -p $PASSWORD"
+        sh 'docker push roysav/ci-cd:multi_stage_test'
+        }
+  }
+   }
+}

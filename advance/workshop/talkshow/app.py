@@ -7,7 +7,7 @@ def create_app(**kwargs):
     app = Flask(__name__)
     app.config.update(kwargs)
     # extensions
-    ext.configure(app)  # <-- registro dinâmico das extensões
+    ext.configure(app)  #
     # blueprints
-    blueprints.configure(app)  # <-- registro dinâmico dos blueprints
+    blueprints.configure(app) 
     return app

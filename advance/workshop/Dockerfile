@@ -1,1 +1,25 @@
-RlJPTSBweXRob246My4xMCBhcyBidWlsZGVyCgpXT1JLRElSIC9hcHAKCkFSRyBVU0VSTkFNRQpBUkcgUEFTU1dPUkQKQ09QWSAuIC9hcHAvCgpSVU4gcGlwIGluc3RhbGwgLWUgJy5bZGV2XScgJiYgcGlwIGluc3RhbGwgZW1haWxfdmFsaWRhdG9yCgpSVU4gZmxhc2sgYWRkdXNlciAtdSAkVVNFUk5BTUUgLXAgJFBBU1NXT1JEClJVTiBmbGFzayBhZGRldmVudCAtbiAiRmxhc2sgQ29uZiIgLWQgIjIwMTgtMDgtMjUiCgpGUk9NIHFuaWIvcHl0ZXN0IGFzIHB5dGVzdAoKV09SS0RJUiAvdGVzdApDT1BZIC0tZnJvbT1idWlsZGVyIC9hcHAgL3Rlc3QKUlVOIHB5dGVzdCAtdiAtLWNvdi1jb25maWcgLmNvdmVyYWdlcmMgLS1jb3Y9dGFsa3Nob3cgLWwgLS10Yj1zaG9ydCAtLW1heGZhaWw9MSB0ZXN0cy8KCkZST00gYnVpbGRlciBhcyBmaW5hbAoKQ01EIFsiZmxhc2siLCAicnVuIl0=
+FROM python as builder
+
+
+WORKDIR /app
+COPY . /app
+
+FROM python as test
+COPY --from=builder /app /app
+WORKDIR /app
+RUN python3 -m pip install pytest
+RUN python3 -m pip install -e '.[dev]'
+RUN ["python3", "-m", "pytest"]
+
+
+FROM python:slim
+COPY --from=builder /app /app
+WORKDIR /app
+ENV FLASK_APP=talkshow/app.py
+ENV FLASK_ENV=development
+ENV FLASK_RUN_HOST='0.0.0.0'
+ENV FLASK_RUN_PORT=5002
+
+RUN python3 -m pip install -e '.[dev]'
+
+CMD ["python3", "-m", "flask", "run"]
